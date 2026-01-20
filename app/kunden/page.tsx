@@ -1,7 +1,9 @@
-import { supabase } from "@/lib/supabaseClient";
+import { createSupabaseServerClient } from "@/lib/supabaseClient";
 
 export default async function KundenPage() {
-  const { data: kunden } = await supabase
+  const supabase = createSupabaseServerClient();
+
+  const { data: kunden, error } = await supabase
     .from("kunden")
     .select("*")
     .order("nachname");
@@ -18,7 +20,8 @@ export default async function KundenPage() {
       </a>
 
       <pre className="mt-6 bg-gray-100 p-4 rounded">
-        {JSON.stringify(kunden, null, 2)}
+        {error && "Fehler: " + error.message}
+        {kunden ? JSON.stringify(kunden, null, 2) : "Keine Kunden gefunden"}
       </pre>
     </div>
   );
